@@ -1,6 +1,8 @@
 # stave
 this project code for stave exercises
-
+------------------------------------------
+[start now](https://fanvanzh.github.io/stave)
+------------------------------------------
 Enter the number 1 to 7, according to the notes appeared.
 
 Failure three times will start over.
@@ -16,7 +18,8 @@ Press Space to restart.
 
 
 ------------------------------------------------
-
+[开始练习](https://fanvanzh.github.io/stave)
+------------------------------------------------
 这是一个练习五线谱的项目。
 
 根据出现的音符，敲击键盘上的数字 1 ~ 7。
