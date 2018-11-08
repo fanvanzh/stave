@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>staves</title>
+</head>
+<body onkeypress="key(event)">
+<canvas id="myCanvas"/>
+<script type="text/javascript"> 　　
+    var canvas = document.getElementById("myCanvas");
+    canvas.width = document.body.clientWidth; 
+    canvas.height = window.innerHeight - 100;
+    var context = canvas.getContext("2d"); 　
+    var screen_w = canvas.width - 100;
+    var screen_h = canvas.height - 100;
+
+    var resourceReady = 0;
+    // draw lines
+    var img_high = new Image();
+    img_high.src = "./high.png";
+    img_high.onload = begin;
+
+    // 低音符号
+    var img_low = new Image();
+    img_low.src = "./low.png";
+    img_low.onload = begin;
+
+    // 绘制音符
+    var img_note = new Image();
+    img_note.src = "./note.png";
+    img_note.onload = begin;
+
+    // 背景图
+    var img_back = new Image();
+    var image_rand = select(1,30);
+    img_back.src = "./img/" + image_rand + ".jpg";
+    img_back.onload = begin;
+
+    var start = [150,200];
+    var end = [screen_w, 200]
+    var low = -7;
+    var high = 13;
+    var pre_note = select(low,high);
+    
+    function draw_backgroud() {
+        // body...
+        context.drawImage(img_back, 50, 50, screen_w, screen_h);
+        context.fillStyle="#668800";
+        context.fillRect(50, 50, screen_w, screen_h - score*5); 
+    }
+
+    function begin() {
+        resourceReady = resourceReady + 1;
+        if (resourceReady == 4) {
+            // 绘制默认乐符
+            timedCount();
+        }
+    }
+
+    function key(e) {
+        // body...
+        var charcode = event.charCode;
+        var val = charcode - 48;
+        if (val - 1 == (pre_note + 49) % 7)
+            score = score + 1;
+        notes = notes + 1;
+        if (charcode == 32 || notes - score > 3) {
+            notes = 0; score = 0; c = 0;
+        }
+        pre_note = select(low,high);
+        // 重绘
+        // 更新显示正确率，时间
+        refresh();
+    }
+
+    function select(low, high) {
+        var ch=high - low + 1;
+        return Math.floor(Math.random()*ch+low);
+    }
+
+    // 画音符，中央 C 为 0 
+    function draw_note(index) {
+        //console.log("draw: " + index);
+        if (index >= 0) {
+            draw_high();
+        } else {
+            draw_low();
+        }
+        // 小字1组 C 音 位置
+        var base_height = start[1] + 80;
+        if (index < 0) {
+            //index = index + 11;
+            base_height = start[1] - 40;
+        }
+        draw_add(index);
+        context.drawImage(img_note, start[0] + 50, base_height - 10*index, 25, 25);
+    }
+
+    // 画加线
+    function draw_add(index) {
+        // body...
+        if (index == 0 ) {
+            context.strokeStyle = "#ffffff"; 
+            context.moveTo(start[0], start[1] + 5 * 20);
+            context.lineTo(start[0] + 100, end[1] + 5 * 20);
+            context.stroke();
+        } else if ( index > 11 ) {
+            context.strokeStyle = "#ffffff"; 
+            context.moveTo(start[0], start[1] - 20);
+            context.lineTo(start[0] + 100, end[1] - 20);
+            context.stroke();
+        }
+    }
+
+    // 画基础线
+    function draw_base() {
+        draw_backgroud();
+        context.strokeStyle = "#ffffff"; 
+        for (var i = 0; i < 5; i++) {
+            context.moveTo(start[0], start[1] + i * 20);
+            context.lineTo(end[0], end[1] + i * 20);
+            context.stroke();           
+        }
+    }
+
+    // 画高音
+    function draw_high() {
+        context.drawImage(img_high, start[0] - 50, start[1], 40, 80);  
+    }
+
+    // 画低音
+    function draw_low() {
+        context.drawImage(img_low, start[0] - 50, start[1] + 10, 40, 60);   
+    }
+
+    var score = 0;
+    var notes = 0;
+    function refresh() {
+        canvas.width = canvas.width;
+        // 基础
+        draw_base();
+        // 乐符号
+        draw_note(pre_note);
+        // 计时
+        context.font = "italic 35px 黑体";
+        context.fillStyle = "Red";
+        context.fillText(
+            "T：" + c + " S, " + "Score: " + score + "/" + notes, 
+            screen_w / 2 - 150 , screen_h / 2);
+    }
+
+    // 计时器
+    var c=0;
+    var t;
+    function timedCount()
+    {
+        c = c + 1;
+        refresh();
+        t=setTimeout("timedCount()",1000);
+    }
+
+</script>
+</body>
+</html>
