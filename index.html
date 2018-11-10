@@ -61,7 +61,19 @@
         var charcode = event.charCode;
         var val = charcode - 48;
         if (val - 1 == (pre_note + 49) % 7)
+        {
+            // play the sound
             score = score + 1;
+            var note_name = String.fromCharCode(66 + val); // C
+            if (val >= 6) {
+                note_name = String.fromCharCode(65 + val - 6); // A
+            }
+            var note_stage = 4 + Math.floor(pre_note / 7);
+            var note_name = "./notes/" + note_name + note_stage + ".ogg";
+            console.log(note_name);
+            var audio = new Audio(note_name);
+            audio.play();
+        }    
         notes = notes + 1;
         if (charcode == 32 || notes - score > 3) {
             notes = 0; score = 0; c = 0;
